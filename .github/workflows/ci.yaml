@@ -1,0 +1,50 @@
+# Название workflow (отображается в интерфейсе GitHub)
+name: Flutter CI Pipeline
+
+# КОГДА запускать: при каждом пуше в ветки main или master,
+# и при каждом pull request в эти ветки
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+# ОПИСАНИЕ РАБОТ (jobs) - может быть несколько, но у нас одна
+jobs:
+  # Название работы - "test"
+  test:
+    # ГДЕ выполнять: на вашем self-hosted раннере (машине друга)
+    runs-on: self-hosted
+    
+    # ШАГИ, которые выполнятся последовательно
+    steps:
+      # ШАГ 1: Получить код из репозитория
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # ШАГ 2: Установить Flutter (специальное действие для Flutter)
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          # Версия Flutter - можно указать конкретную
+          flutter-version: 'stable'
+          # Кэшируем данные Flutter, чтобы ускорить следующие запуски
+          cache: true
+          cache-key: flutter-stable-cache
+          cache-path: /tmp/flutter-cache
+      
+      # ШАГ 3: Установить зависимости проекта (аналог 'npm install')
+      - name: Install dependencies
+        run: flutter pub get
+      
+      # ШАГ 4: Проверить код на соответствие стилю и найти потенциальные ошибки
+      - name: Analyze code
+        run: flutter analyze
+      
+      # ШАГ 5: Запустить unit-тесты
+      - name: Run tests
+        run: flutter test
+      
+      # ШАГ 6 (опционально): Собрать проект для веба, чтобы убедиться в работоспособности
+      - name: Build web version
+        run: flutter build web --release
