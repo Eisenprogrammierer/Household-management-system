@@ -13,8 +13,11 @@ abstract class ScheduleRepository {
 }
 
 Future<Schedule> createSchedule(Schedule schedule) async {
-  if (schedule.startDate.isAfter(schedule.endDate ?? DateTime.now())) {
+  if (schedule.startDate.isAfter(schedule.endDate ?? DateTime.now().add(const Duration(days: 365 * 10)))) {
     throw ArgumentError('Start date must be before end date');
   }
-  // Дополнительные проверки
+  if (schedule.recurrenceRuleId.isEmpty) {
+    throw ArgumentError('Recurrence rule ID cannot be empty');
+  }
+  return schedule;
 }
