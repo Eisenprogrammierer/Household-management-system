@@ -1,0 +1,23 @@
+dartdoc:
+  categories:
+    "API Endpoints":
+      - api_endpoints
+      - ApiClient
+      - ApiException
+      - TasksApi
+      - UsersApi
+      - DevicesApi
+      - SchedulesApi
+      - HouseholdsApi
+      - BudgetApi
+      - ReportsApi
+  
+  include:
+    - "**/*.dart"
+  
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.mocks.dart"
+  
+  sdkDir: null
